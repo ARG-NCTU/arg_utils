@@ -7,7 +7,24 @@ import yaml
 from numpy.linalg import inv
 from arg_utils.camera_projection import camera_projection as cam_proj
 from scipy.spatial.transform import Rotation as R
+import wget
+from zipfile import ZipFile
 
+def wget_unzip(url, filename):
+    if not os.path.isdir(filename):
+        site_url = url
+        file_name = wget.download(site_url)
+        print(file_name)
+        zip_file = ZipFile(file_name)
+        zip_file.extractall(os.path.dirname(filename))
+        zip_file.close()
+        os.replace("./ViperX_apriltags.zip", "datas/ViperX_apriltags.zip")
+
+
+
+def test_download():
+    wget_unzip("ftp://140.113.148.83/arg-projectfile-download/arg_utils/ViperX_apriltags.zip","datas/ViperX_apriltags")
+    
 def test_read_camera_info():
     test_cam_proj = cam_proj()
     test_cam_proj.read_camera_info('datas/ViperX_apriltags/camera_info.yaml')
