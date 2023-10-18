@@ -1,3 +1,4 @@
 .pytest*
 datas/
 __pycache__/
+tags
