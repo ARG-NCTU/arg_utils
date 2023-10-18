@@ -1,0 +1,3 @@
+.pytest*
+script/datas/*
+script/__pyache__
