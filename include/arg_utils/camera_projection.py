@@ -5,25 +5,10 @@ __all__ = ['camera_projection']
 
 # %% ../01_camera_projection.ipynb 4
 import numpy as np
-import scipy as sp
 import cv2
-from cv2 import aruco
 import apriltag
-import time
 import yaml
 
-import pytransform3d.rotations as pr
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-
-import os
-import sys
-import gdown
-from zipfile import ZipFile
-
-from scipy.spatial.transform import Rotation as R
-from numpy.linalg import inv
 
 # %% ../01_camera_projection.ipynb 5
 class camera_projection:

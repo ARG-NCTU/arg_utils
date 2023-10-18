@@ -1,8 +1,8 @@
+#! /usr/bin/env python3
 import os
 import pytest
 import numpy as np
 import add_path
-import matplotlib.pyplot as plt
 import yaml
 from numpy.linalg import inv
 from arg_utils.camera_projection import camera_projection as cam_proj
@@ -86,3 +86,6 @@ def test_draw_point():
     # plt.rcParams['figure.figsize'] = (figsize, figsize)
     # plt.imshow(draw_image, cmap = 'brg')
     # plt.show()
+
+if __name__ == '__main__':
+    pytest.main(['-s', '-v', __file__])
