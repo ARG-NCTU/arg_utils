@@ -10,6 +10,8 @@ from scipy.spatial.transform import Rotation as R
 import wget
 from zipfile import ZipFile
 
+
+
 def wget_unzip(url, filename):
     if not os.path.isdir(filename):
         site_url = url
@@ -18,12 +20,10 @@ def wget_unzip(url, filename):
         zip_file = ZipFile(file_name)
         zip_file.extractall(os.path.dirname(filename))
         zip_file.close()
-        os.replace("./ViperX_apriltags.zip", "datas/ViperX_apriltags.zip")
-
-
+        os.replace("./ViperX_apriltags.zip", "data/ViperX_apriltags.zip")
 
 def test_download():
-    wget_unzip("ftp://140.113.148.83/arg-projectfile-download/arg_utils/ViperX_apriltags.zip","datas/ViperX_apriltags")
+    wget_unzip("ftp://140.113.148.83/arg-projectfile-download/arg_utils/ViperX_apriltags.zip","data/ViperX_apriltags")
     
 def test_read_camera_info():
     test_cam_proj = cam_proj()
