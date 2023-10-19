@@ -1,4 +1,4 @@
 .pytest*
-data/*
+/data/*
 __pycache__/
 tags
