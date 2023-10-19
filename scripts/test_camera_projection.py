@@ -11,7 +11,6 @@ import wget
 from zipfile import ZipFile
 
 
-
 def wget_unzip(url, filename):
     if not os.path.isdir(filename):
         site_url = url
