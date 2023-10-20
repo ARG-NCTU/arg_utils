@@ -26,13 +26,13 @@ def test_download():
     
 def test_read_camera_info():
     test_cam_proj = cam_proj()
-    test_cam_proj.read_camera_info('datas/ViperX_apriltags/camera_info.yaml')
+    test_cam_proj.read_camera_info('data/ViperX_apriltags/camera_info.yaml')
     assert np.array_equal(test_cam_proj.dist_coeffs, np.array([[0, 0, 0, 0, 0]]))
     assert test_cam_proj.cameraParams_Intrinsic == [615.7344970703125, 616.2518310546875, 317.8375854492188, 241.1808624267578]
 
 def test_read_images():
     test_cam_proj = cam_proj()
-    test_cam_proj.read_images(300, 'datas/ViperX_apriltags/rgb/', 'datas/ViperX_apriltags/depth/')
+    test_cam_proj.read_images(300, 'data/ViperX_apriltags/rgb/', 'data/ViperX_apriltags/depth/')
     assert test_cam_proj.img is not None
     assert test_cam_proj.gray is not None
     assert test_cam_proj.depth is not None
@@ -40,15 +40,15 @@ def test_read_images():
 
 def test_apriltag_detection():
     test_cam_proj = cam_proj()
-    test_cam_proj.read_images(300, 'datas/ViperX_apriltags/rgb/', 'datas/ViperX_apriltags/depth/')
+    test_cam_proj.read_images(300, 'data/ViperX_apriltags/rgb/', 'data/ViperX_apriltags/depth/')
     expected_num_tags = 1
     test_cam_proj.apriltag_detection()
     assert len(test_cam_proj.detection_results) == expected_num_tags
 
 def test_solvePnP():
     test_cam_proj = cam_proj()
-    test_cam_proj.read_camera_info('datas/ViperX_apriltags/camera_info.yaml')
-    test_cam_proj.read_images(idx=300, img_path='datas/ViperX_apriltags/rgb/', depth_path='datas/ViperX_apriltags/depth/')
+    test_cam_proj.read_camera_info('data/ViperX_apriltags/camera_info.yaml')
+    test_cam_proj.read_images(idx=300, img_path='data/ViperX_apriltags/rgb/', depth_path='data/ViperX_apriltags/depth/')
     test_cam_proj.apriltag_detection('tag36h11')
     test_cam_proj.solvePnP(0.0415)
     test_r_vec = [round(i,2) for i in np.array(test_cam_proj.r_vec).ravel()]
@@ -60,15 +60,15 @@ def test_solvePnP():
 
 def test_draw_point():
     test_cam_proj = cam_proj()
-    test_cam_proj.read_camera_info('datas/ViperX_apriltags/camera_info.yaml')
-    test_cam_proj.read_images(idx=300, img_path='datas/ViperX_apriltags/rgb/', depth_path='datas/ViperX_apriltags/depth/')
+    test_cam_proj.read_camera_info('data/ViperX_apriltags/camera_info.yaml')
+    test_cam_proj.read_images(idx=300, img_path='data/ViperX_apriltags/rgb/', depth_path='data/ViperX_apriltags/depth/')
     test_cam_proj.apriltag_detection('tag36h11')
     test_cam_proj.solvePnP(0.0415)
 
     r = R.from_euler('x', 180, degrees=True)
     r_tran = np.identity(4)
     r_tran[:3,:3] = r.as_matrix()
-    with open('datas/ViperX_apriltags/pose/' + str(test_cam_proj.idx) + '.yaml', "r") as stream:
+    with open('data/ViperX_apriltags/pose/' + str(test_cam_proj.idx) + '.yaml', "r") as stream:
         try:
             data = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
