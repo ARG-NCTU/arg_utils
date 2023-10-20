@@ -10,29 +10,32 @@ from scipy.spatial.transform import Rotation as R
 import wget
 from zipfile import ZipFile
 
+script_path = os.path.abspath(__file__)
+# data_directory = /home/rsa/LoCoBot-RSA/low_cost_ws/src/arg_utils/scripts/data
+data_directory = os.path.join(os.path.dirname(script_path), "data")
 
 def wget_unzip(url, filename):
     if not os.path.isdir(filename):
         site_url = url
         file_name = wget.download(site_url)
+        os.replace(os.path.join(data_directory, "../../ViperX_apriltags.zip"), filename)
         print(file_name)
-        zip_file = ZipFile(file_name)
+        zip_file = ZipFile(filename)
         zip_file.extractall(os.path.dirname(filename))
         zip_file.close()
-        os.replace("./ViperX_apriltags.zip", "data/ViperX_apriltags.zip")
-
+        
 def test_download():
-    wget_unzip("ftp://140.113.148.83/arg-projectfile-download/arg_utils/ViperX_apriltags.zip","data/ViperX_apriltags")
+    wget_unzip("ftp://140.113.148.83/arg-projectfile-download/arg_utils/ViperX_apriltags.zip", os.path.join(data_directory, "ViperX_apriltags.zip"))
     
 def test_read_camera_info():
     test_cam_proj = cam_proj()
-    test_cam_proj.read_camera_info('data/ViperX_apriltags/camera_info.yaml')
+    test_cam_proj.read_camera_info(os.path.join(data_directory, os.path.join("ViperX_apriltags", "camera_info.yaml")))
     assert np.array_equal(test_cam_proj.dist_coeffs, np.array([[0, 0, 0, 0, 0]]))
     assert test_cam_proj.cameraParams_Intrinsic == [615.7344970703125, 616.2518310546875, 317.8375854492188, 241.1808624267578]
 
 def test_read_images():
     test_cam_proj = cam_proj()
-    test_cam_proj.read_images(300, 'data/ViperX_apriltags/rgb/', 'data/ViperX_apriltags/depth/')
+    test_cam_proj.read_images(300,os.path.join(data_directory, 'ViperX_apriltags/rgb/'), os.path.join(data_directory, 'ViperX_apriltags/depth/'))
     assert test_cam_proj.img is not None
     assert test_cam_proj.gray is not None
     assert test_cam_proj.depth is not None
@@ -40,15 +43,15 @@ def test_read_images():
 
 def test_apriltag_detection():
     test_cam_proj = cam_proj()
-    test_cam_proj.read_images(300, 'data/ViperX_apriltags/rgb/', 'data/ViperX_apriltags/depth/')
+    test_cam_proj.read_images(300, os.path.join(data_directory, 'ViperX_apriltags/rgb/'), os.path.join(data_directory, 'ViperX_apriltags/depth/'))
     expected_num_tags = 1
-    test_cam_proj.apriltag_detection()
+    test_cam_proj.apriltag_detection('tag36h11')
     assert len(test_cam_proj.detection_results) == expected_num_tags
 
 def test_solvePnP():
     test_cam_proj = cam_proj()
-    test_cam_proj.read_camera_info('data/ViperX_apriltags/camera_info.yaml')
-    test_cam_proj.read_images(idx=300, img_path='data/ViperX_apriltags/rgb/', depth_path='data/ViperX_apriltags/depth/')
+    test_cam_proj.read_camera_info(os.path.join(data_directory, os.path.join("ViperX_apriltags", "camera_info.yaml")))
+    test_cam_proj.read_images(300,os.path.join(data_directory, 'ViperX_apriltags/rgb/'), os.path.join(data_directory, 'ViperX_apriltags/depth/'))
     test_cam_proj.apriltag_detection('tag36h11')
     test_cam_proj.solvePnP(0.0415)
     test_r_vec = [round(i,2) for i in np.array(test_cam_proj.r_vec).ravel()]
@@ -60,15 +63,15 @@ def test_solvePnP():
 
 def test_draw_point():
     test_cam_proj = cam_proj()
-    test_cam_proj.read_camera_info('data/ViperX_apriltags/camera_info.yaml')
-    test_cam_proj.read_images(idx=300, img_path='data/ViperX_apriltags/rgb/', depth_path='data/ViperX_apriltags/depth/')
+    test_cam_proj.read_camera_info(os.path.join(data_directory, os.path.join("ViperX_apriltags", "camera_info.yaml")))
+    test_cam_proj.read_images(300, os.path.join(data_directory, 'ViperX_apriltags/rgb/'), os.path.join(data_directory, 'ViperX_apriltags/depth/'))
     test_cam_proj.apriltag_detection('tag36h11')
     test_cam_proj.solvePnP(0.0415)
 
     r = R.from_euler('x', 180, degrees=True)
     r_tran = np.identity(4)
     r_tran[:3,:3] = r.as_matrix()
-    with open('data/ViperX_apriltags/pose/' + str(test_cam_proj.idx) + '.yaml', "r") as stream:
+    with open(os.path.join(data_directory, 'ViperX_apriltags/pose/') + str(test_cam_proj.idx) + '.yaml', "r") as stream:
         try:
             data = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
